@@ -26,5 +26,4 @@ Route::get('/', function () {
 Route::middleware('auth')->group(function () {
     Route::resource('posts',PostController::class);
 });
-
 require __DIR__ . '/auth.php';

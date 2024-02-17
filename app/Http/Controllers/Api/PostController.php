@@ -17,12 +17,20 @@ class PostController extends Controller
     }
     public function show($id)
     {
-        $post = new PostResource(Post::find($id));
+        $post = Post::find($id);
         if ($post) {
-            return $this->apiResponse($post, 'Success', 200);
+            return $this->apiResponse(new PostResource($post), 'Success', 200);
         }
-        else{
             return $this->apiResponse(null, 'Not Found', 401);
+
+    }
+
+    public function store(Request $request)
+    {
+        $post = Post::create($request->all());
+        if ($post) {
+            return $this->apiResponse(new PostResource($post), 'Success', 201);
         }
+        return $this->apiResponse(null, 'Not Created', 400);
     }
 }
