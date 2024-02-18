@@ -30,18 +30,39 @@ class PostController extends Controller
 
     public function store(Request $request)
     {
-        $validator = Validator::make($request->all(), [
+        $rules = [
             'title' => 'required|max:255',
             'body' => 'required',
-        ]);
-        if ($validator->fails()) {
-
-            return $this->apiResponse(null, $validator->errors(), 400);
+        ];
+        $errorResponse = $this->validateRequest($request, $rules);
+        if ($errorResponse) {
+            return $errorResponse;
         }
 
         $post = Post::create($request->all());
         if ($post) {
             return $this->apiResponse(new PostResource($post), 'Success', 201);
+        }
+        return $this->apiResponse(null, 'Not Created', 401);
+    }
+    public function update(Request $request, $id)
+    {
+        $rules = [
+            'title' => 'required|max:255',
+            'body' => 'required',
+        ];
+        $errorResponse = $this->validateRequest($request, $rules);
+        if ($errorResponse) {
+            return $errorResponse;
+        }
+
+        $post = Post::find($id);
+        if (!$post){
+            return $this->apiResponse(null, 'Post Not Found', 400);
+        }
+        $post->update($request->all());
+        if ($post) {
+            return $this->apiResponse(new PostResource($post), 'Update', 201);
         }
     }
 }
