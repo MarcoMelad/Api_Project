@@ -30,8 +30,11 @@ Route::group([
     Route::get('/user-profile', [AuthController::class, 'userProfile']);
 });
 
-Route::get('/posts',[PostController::class,'index']);
-Route::get('/post/{id}',[PostController::class,'show']);
-Route::post('create',[PostController::class,'store']);
-Route::post('update/{id}',[PostController::class,'update']);
-Route::post('delete/{id}',[PostController::class,'destroy']);
+Route::middleware('jwt.verify')->group(function () {
+
+    Route::get('/posts', [PostController::class, 'index']);
+    Route::get('/post/{id}', [PostController::class, 'show']);
+    Route::post('create', [PostController::class, 'store']);
+    Route::post('update/{id}', [PostController::class, 'update']);
+    Route::post('delete/{id}', [PostController::class, 'destroy']);
+});
