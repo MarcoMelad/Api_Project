@@ -21,11 +21,11 @@ class PostController extends Controller
     public function show($id)
     {
         $post = Post::find($id);
-        if ($post) {
-            return $this->apiResponse(new PostResource($post), 'Success', 200);
+        $isfound = $this->notFound($post, 'Post Not Found');
+        if ($isfound) {
+            return $isfound;
         }
-        return $this->apiResponse(null, 'Not Found', 401);
-
+        return $this->apiResponse(new PostResource($post), 'Founded', 200);
     }
 
     public function store(Request $request)
@@ -45,6 +45,7 @@ class PostController extends Controller
         }
         return $this->apiResponse(null, 'Not Created', 401);
     }
+
     public function update(Request $request, $id)
     {
         $rules = [
@@ -57,12 +58,26 @@ class PostController extends Controller
         }
 
         $post = Post::find($id);
-        if (!$post){
-            return $this->apiResponse(null, 'Post Not Found', 400);
+        $isfound = $this->notFound($post, 'post Not Found');
+        if ($isfound) {
+            return $isfound;
         }
         $post->update($request->all());
         if ($post) {
-            return $this->apiResponse(new PostResource($post), 'Update', 201);
+            return $this->apiResponse(new PostResource($post), 'Post Update', 201);
+        }
+    }
+
+    public function destroy($id)
+    {
+        $post = Post::find($id);
+        $isfound = $this->notFound($post, 'post Not Found');
+        if ($isfound) {
+            return $isfound;
+        }
+        $post->destroy($id);
+        if ($post){
+            return $this->apiResponse('null', 'Post Deleted', 200);
         }
     }
 }

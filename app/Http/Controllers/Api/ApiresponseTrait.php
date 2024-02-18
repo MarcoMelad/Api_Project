@@ -26,4 +26,11 @@ trait ApiresponseTrait
         }
         return null;
     }
+
+    public function notFound($item , $message = 'Not Found')
+    {
+        if (!$item){
+            return $this->apiResponse(null, $message, 400);
+        }
+    }
 }
